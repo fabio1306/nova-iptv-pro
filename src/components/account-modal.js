@@ -6,6 +6,7 @@ import { storage } from '../services/storage.service.js';
 import { xtreamService } from '../services/xtream.service.js';
 import { m3uService } from '../services/m3u.service.js';
 import { toast } from './toast.js';
+import { loadingOverlay } from './loading-overlay.js';
 import { tvNav } from '../services/tv-navigation.service.js';
 
 export class AccountModalComponent {
@@ -236,21 +237,13 @@ export class AccountModalComponent {
                 <input class="tv-input tv-focusable" id="form-m3u-file" type="file" accept=".m3u,.m3u8,.txt">
               </div>
             </div>
-
-            <!-- Test Connection Button & Status Box -->
-            <div style="display:flex; align-items:center; justify-content:space-between; padding-top:6px;">
-              <button class="tv-btn tv-btn-sm tv-focusable" type="button" id="btn-test-conn">
-                ⚡ Testar Conexão
-              </button>
-              <div id="test-status-text" style="font-size:13px; font-weight:600; color:var(--text-secondary);"></div>
-            </div>
           </form>
         </div>
 
         <div class="tv-modal-footer">
           <button class="tv-btn tv-focusable" id="form-cancel-btn">Cancelar</button>
           <button class="tv-btn tv-btn-primary tv-focusable" id="form-save-btn">
-            ${isEdit ? 'Salvar Alterações' : 'Salvar e Conectar'}
+            ${isEdit ? 'Salvar Alterações' : 'Entrar no Aplicativo'}
           </button>
         </div>
       </div>
@@ -298,40 +291,7 @@ export class AccountModalComponent {
       }
     });
 
-    // Test Connection
-    const btnTest = this.modalEl.querySelector('#btn-test-conn');
-    const statusText = this.modalEl.querySelector('#test-status-text');
-
-    btnTest.addEventListener('click', async () => {
-      const type = formType.value;
-      statusText.innerHTML = '<span style="color:var(--primary);">Testando comunicação...</span>';
-
-      try {
-        if (type === 'xtream') {
-          const server = this.modalEl.querySelector('#form-server').value.trim();
-          const user = this.modalEl.querySelector('#form-user').value.trim();
-          const pass = this.modalEl.querySelector('#form-pass').value.trim();
-          if (!server || !user || !pass) {
-            statusText.innerHTML = '<span style="color:var(--status-danger);">Preencha servidor, usuário e senha.</span>';
-            return;
-          }
-          const auth = await xtreamService.authenticate(server, user, pass);
-          statusText.innerHTML = `<span style="color:var(--status-active);">✓ Conectado! Vencimento: ${auth.userInfo.expiryDate}</span>`;
-        } else {
-          const url = this.modalEl.querySelector('#form-m3u-url').value.trim();
-          if (!url) {
-            statusText.innerHTML = '<span style="color:var(--status-danger);">Informe a URL da lista M3U.</span>';
-            return;
-          }
-          const parsed = await m3uService.loadFromUrl(url);
-          statusText.innerHTML = `<span style="color:var(--status-active);">✓ Conectado! ${parsed.total} canais detectados.</span>`;
-        }
-      } catch (err) {
-        statusText.innerHTML = `<span style="color:var(--status-danger);">✕ Falha: ${err.message}</span>`;
-      }
-    });
-
-    // Save Button
+    // Save & Connect Button
     this.modalEl.querySelector('#form-save-btn').addEventListener('click', async () => {
       const name = this.modalEl.querySelector('#form-name').value.trim();
       const type = formType.value;
@@ -362,15 +322,20 @@ export class AccountModalComponent {
         accountData.username = username;
         accountData.password = password;
 
-        // Try to fetch initial info
+        loadingOverlay.show('Conectando ao Servidor', 'Validando usuário e senha no Xtream Codes...', 25);
+
         try {
           const auth = await xtreamService.authenticate(serverUrl, username, password);
           accountData.expiryDate = auth.userInfo.expiryDate;
           accountData.expiryDays = auth.userInfo.expiryDays;
           accountData.maxConnections = auth.userInfo.maxConnections;
           accountData.activeConnections = auth.userInfo.activeConnections;
+          loadingOverlay.update('Credenciais validadas! Conectado.', 70);
         } catch (e) {
-          console.warn('[AccountModal] Non-blocking initial auth sync note:', e);
+          console.error('[AccountModal] Authentication error:', e);
+          loadingOverlay.hide();
+          toast.error('Erro de Conexão', e.message || 'Não foi possível autenticar no servidor.');
+          return;
         }
       } else {
         const m3uUrl = this.modalEl.querySelector('#form-m3u-url').value.trim();
@@ -391,13 +356,21 @@ export class AccountModalComponent {
       storage.saveAccount(accountData);
       storage.setActiveAccountId(accountData.id);
 
+      loadingOverlay.hide();
       toast.success('Conta salva', `Acesso "${name}" configurado com sucesso!`);
       this.close();
       this.onAccountChanged(accountData.id);
     });
 
-    this.modalEl.querySelector('#form-modal-close').addEventListener('click', () => this.openManager());
-    this.modalEl.querySelector('#form-cancel-btn').addEventListener('click', () => this.openManager());
+    const handleCancel = () => {
+      if (storage.getAccounts().length > 0) {
+        this.openManager();
+      } else {
+        this.close();
+      }
+    };
+    this.modalEl.querySelector('#form-modal-close').addEventListener('click', handleCancel);
+    this.modalEl.querySelector('#form-cancel-btn').addEventListener('click', handleCancel);
   }
 
   // --- VIEW DETAILS MODAL ("MINHA CONTA") ---

@@ -1,8 +1,9 @@
 // ==========================================================================
-// MOVIES (VOD) VIEW - POSTER GRID & RICH CONTENT DETAILS MODAL
+// MOVIES (VOD) VIEW - POSTER GRID & ON-DEMAND CATEGORY LOADING
 // ==========================================================================
 
 import { storage } from '../services/storage.service.js';
+import { xtreamService } from '../services/xtream.service.js';
 import { toast } from '../components/toast.js';
 import { tvNav } from '../services/tv-navigation.service.js';
 
@@ -10,9 +11,11 @@ export class MoviesView {
   constructor(options = {}) {
     this.onPlay = options.onPlay || (() => {});
     this.container = null;
+    this.account = null;
     this.categories = [];
     this.movies = [];
-    this.selectedCategory = 'all';
+    this.selectedCategory = null;
+    this.categoryMoviesCache = new Map();
   }
 
   render(parentElement) {
@@ -34,7 +37,7 @@ export class MoviesView {
         </div>
 
         <!-- Movies Poster Grid -->
-        <div>
+        <div style="flex:1; display:flex; flex-direction:column; overflow:hidden;">
           <div class="tv-catalog-header">
             <div class="tv-catalog-title">
               <span>Catálogo de Filmes</span>
@@ -54,77 +57,140 @@ export class MoviesView {
     this.bindEvents();
   }
 
-  setData(categories, movies) {
-    this.categories = categories;
-    this.movies = movies;
+  setAccountContext(account, categories, defaultMovies = []) {
+    this.account = account;
+    this.categories = categories || [];
+    this.categoryMoviesCache.clear();
+
+    if (defaultMovies && defaultMovies.length > 0) {
+      this.movies = defaultMovies;
+      this.categoryMoviesCache.set('all', defaultMovies);
+    } else {
+      this.movies = [];
+    }
+
     this.renderCategories();
-    this.filterMovies();
+
+    if (this.categories.length > 0) {
+      this.selectCategory(this.categories[0].id);
+    }
+  }
+
+  setData(categories, movies) {
+    this.setAccountContext(storage.getActiveAccount(), categories, movies);
   }
 
   renderCategories() {
     const listEl = this.container.querySelector('#movies-categories-list');
     listEl.innerHTML = '';
 
-    // "Todos"
-    const allItem = document.createElement('div');
-    allItem.className = `tv-category-item tv-focusable ${this.selectedCategory === 'all' ? 'active' : ''}`;
-    allItem.tabIndex = 0;
-    allItem.innerHTML = `<span>Todos os Filmes</span><span class="tv-badge-count">${this.movies.length}</span>`;
-    allItem.addEventListener('click', () => {
-      this.selectedCategory = 'all';
-      this.renderCategories();
-      this.filterMovies();
-    });
-    listEl.appendChild(allItem);
-
-    // "Favoritos"
-    const favMovies = this.movies.filter(m => storage.isFavorite('movies', m.id));
+    // Favoritos
+    const favMovies = storage.getFavorites().filter(f => f.type === 'movies');
     const favItem = document.createElement('div');
     favItem.className = `tv-category-item tv-focusable ${this.selectedCategory === 'favorites' ? 'active' : ''}`;
     favItem.tabIndex = 0;
     favItem.innerHTML = `<span>⭐ Favoritos</span><span class="tv-badge-count">${favMovies.length}</span>`;
     favItem.addEventListener('click', () => {
-      this.selectedCategory = 'favorites';
-      this.renderCategories();
-      this.filterMovies();
+      this.selectCategory('favorites');
     });
     listEl.appendChild(favItem);
 
     this.categories.forEach(cat => {
-      const count = this.movies.filter(m => m.category === cat.id || m.category === cat.name).length;
       const item = document.createElement('div');
-      item.className = `tv-category-item tv-focusable ${this.selectedCategory === cat.id ? 'active' : ''}`;
+      item.className = `tv-category-item tv-focusable ${this.selectedCategory === String(cat.id) ? 'active' : ''}`;
       item.tabIndex = 0;
-      item.innerHTML = `<span class="truncate">${cat.name}</span><span class="tv-badge-count">${count}</span>`;
+      item.dataset.id = cat.id;
+      item.innerHTML = `<span class="truncate">${cat.name}</span>`;
       item.addEventListener('click', () => {
-        this.selectedCategory = cat.id;
-        this.renderCategories();
-        this.filterMovies();
+        this.selectCategory(String(cat.id));
       });
       listEl.appendChild(item);
     });
   }
 
-  filterMovies() {
-    const search = this.container.querySelector('#movies-search-input').value.toLowerCase().trim();
-    let filtered = this.movies;
+  async selectCategory(categoryId) {
+    this.selectedCategory = categoryId;
 
-    if (this.selectedCategory === 'favorites') {
-      filtered = filtered.filter(m => storage.isFavorite('movies', m.id));
-    } else if (this.selectedCategory !== 'all') {
-      filtered = filtered.filter(m => m.category === this.selectedCategory || m.category === this.getCatName(this.selectedCategory));
+    this.container.querySelectorAll('#movies-categories-list .tv-category-item').forEach(el => {
+      if (categoryId === 'favorites') {
+        el.classList.toggle('active', el.textContent.includes('Favoritos'));
+      } else {
+        el.classList.toggle('active', el.dataset.id === String(categoryId));
+      }
+    });
+
+    if (categoryId === 'favorites') {
+      const favs = storage.getFavorites().filter(f => f.type === 'movies').map(f => f.data);
+      this.renderMovies(favs);
+      return;
     }
 
-    if (search) {
-      filtered = filtered.filter(m => m.title.toLowerCase().includes(search));
+    if (this.categoryMoviesCache.has(categoryId)) {
+      this.renderMovies(this.categoryMoviesCache.get(categoryId));
+      return;
     }
 
+    if (this.account && this.account.type === 'xtream') {
+      const gridEl = this.container.querySelector('#movies-grid');
+      const badgeEl = this.container.querySelector('#movies-count-badge');
+      badgeEl.textContent = '...';
+      gridEl.innerHTML = `
+        <div style="grid-column: 1 / -1; display:flex; flex-direction:column; align-items:center; justify-content:center; height:300px; gap:14px; color:var(--text-secondary);">
+          <div class="tv-spinner"></div>
+          <span>Carregando filmes da categoria...</span>
+        </div>
+      `;
+
+      try {
+        const streams = await xtreamService.getVodStreams(
+          this.account.serverUrl,
+          this.account.username,
+          this.account.password,
+          categoryId
+        );
+
+        const formatted = streams.map(m => ({
+          id: String(m.stream_id),
+          title: m.name,
+          category: categoryId,
+          poster: m.stream_icon,
+          rating: m.rating || '8.0',
+          streamUrl: xtreamService.getVodStreamUrl(this.account.serverUrl, this.account.username, this.account.password, m.stream_id, m.container_extension || 'mp4')
+        }));
+
+        this.categoryMoviesCache.set(categoryId, formatted);
+
+        if (this.selectedCategory === categoryId) {
+          this.renderMovies(formatted);
+        }
+      } catch (err) {
+        console.error('[MoviesView] Category fetch error:', err);
+        gridEl.innerHTML = `<div style="grid-column: 1 / -1; padding:40px; text-align:center; color:var(--status-danger);">Falha ao carregar filmes.</div>`;
+      }
+      return;
+    }
+
+    const filtered = this.movies.filter(m => String(m.category) === String(categoryId));
     this.renderMovies(filtered);
   }
 
-  getCatName(id) {
-    const c = this.categories.find(it => it.id === id);
-    return c ? c.name : id;
+  filterMovies() {
+    const search = this.container.querySelector('#movies-search-input').value.toLowerCase().trim();
+    let currentList = [];
+
+    if (this.selectedCategory === 'favorites') {
+      currentList = storage.getFavorites().filter(f => f.type === 'movies').map(f => f.data);
+    } else if (this.categoryMoviesCache.has(this.selectedCategory)) {
+      currentList = this.categoryMoviesCache.get(this.selectedCategory);
+    } else {
+      currentList = this.movies;
+    }
+
+    if (search) {
+      currentList = currentList.filter(m => m.title.toLowerCase().includes(search));
+    }
+
+    this.renderMovies(currentList);
   }
 
   renderMovies(movies) {
@@ -144,7 +210,7 @@ export class MoviesView {
       card.tabIndex = 0;
 
       card.innerHTML = `
-        <img class="tv-poster-img" src="${movie.poster}" alt="${movie.title}" onerror="this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400'">
+        <img class="tv-poster-img" src="${movie.poster || ''}" alt="${movie.title}" onerror="this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400'">
         <div class="tv-poster-overlay">
           <div class="tv-poster-title line-clamp-2">${movie.title}</div>
           <div class="tv-poster-meta">
@@ -163,8 +229,6 @@ export class MoviesView {
   }
 
   openMovieDetail(movie) {
-    const savedPos = storage.getPlaybackPosition(movie.id);
-    const hasResume = savedPos > 30;
     const isFav = storage.isFavorite('movies', movie.id);
 
     const backdropModal = document.createElement('div');
@@ -186,26 +250,17 @@ export class MoviesView {
             <div class="tv-detail-badges">
               <span class="tv-badge-pill" style="color:var(--accent-gold);">★ ${movie.rating || '8.5'} IMDb</span>
               <span class="tv-badge-pill">${movie.year || '2024'}</span>
-              <span class="tv-badge-pill">${movie.duration || '1h 35m'}</span>
-              <span class="tv-badge-pill">${movie.genre || 'Filme'}</span>
               <span class="tv-badge-pill" style="color:var(--primary);">4K ULTRA HD</span>
             </div>
 
-            <p class="tv-detail-desc">${movie.overview || 'Sinopse não disponível.'}</p>
+            <p class="tv-detail-desc">${movie.overview || 'Reprodução disponível em alta resolução através do servidor.'}</p>
 
             <div class="tv-detail-actions">
               <button class="tv-btn tv-btn-primary tv-btn-lg tv-focusable" id="detail-play-btn">
                 ▶ Assistir Agora
               </button>
-
-              ${hasResume ? `
-                <button class="tv-btn tv-focusable" id="detail-resume-btn">
-                  ↻ Continuar (${Math.floor(savedPos / 60)}m)
-                </button>
-              ` : ''}
-
               <button class="tv-btn tv-focusable" id="detail-fav-btn">
-                ${isFav ? '★ Favorito' : '☆ Favoritar'}
+                ${isFav ? '★ Favorito' : '☆ Adicionar aos Favoritos'}
               </button>
             </div>
           </div>
@@ -224,19 +279,10 @@ export class MoviesView {
       this.onPlay(movie);
     });
 
-    if (hasResume) {
-      backdropModal.querySelector('#detail-resume-btn').addEventListener('click', () => {
-        backdropModal.remove();
-        this.onPlay(movie);
-      });
-    }
-
-    const favBtn = backdropModal.querySelector('#detail-fav-btn');
-    favBtn.addEventListener('click', () => {
+    backdropModal.querySelector('#detail-fav-btn').addEventListener('click', (e) => {
       const added = storage.toggleFavorite('movies', movie);
-      favBtn.textContent = added ? '★ Favorito' : '☆ Favoritar';
-      toast.info(added ? 'Favoritado' : 'Removido', `${movie.title} ${added ? 'adicionado aos favoritos' : 'removido'}`);
-      this.renderCategories();
+      e.currentTarget.textContent = added ? '★ Favorito' : '☆ Adicionar aos Favoritos';
+      toast.info(added ? 'Favoritado' : 'Removido', `${movie.title} ${added ? 'adicionado aos favoritos' : 'removido dos favoritos'}`);
     });
   }
 
