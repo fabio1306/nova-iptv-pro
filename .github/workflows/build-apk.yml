@@ -19,52 +19,43 @@ jobs:
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
-      - name: Instalar Dependências e Compilar Web
-        run: |
-          npm install
-          npm run build
-          npx cap sync android
+      - name: Instalar Dependências Web
+        run: npm install
 
-      - name: Configurar Java JDK 17
+      - name: Compilar Frontend Web
+        run: npm run build
+
+      - name: Sincronizar com Android
+        run: npx cap sync android
+
+      - name: Configurar Java JDK 21 (Requerido para Android SDK 36 e Gradle 8.14)
         uses: actions/setup-java@v4
         with:
-          java-version: 17
+          java-version: 21
           distribution: 'temurin'
           cache: 'gradle'
 
-      - name: Conceder permissão ao gradlew
+      - name: Conceder permissão de execução ao gradlew
         run: chmod +x android/gradlew
 
       - name: Compilar APK Android TV
         run: |
           cd android
-          ./gradlew assembleDebug --stacktrace
+          ./gradlew assembleDebug --no-daemon --stacktrace
           cp app/build/outputs/apk/debug/app-debug.apk ../NovaIPTV-Pro.apk
 
-      - name: Publicar Arquivo APK para Download Direto (Release)
-        uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/main'
-        with:
-          tag_name: v1.0.0
-          name: "Nova IPTV Pro v1.0.0 (Android TV APK)"
-          body: |
-            ### 📺 Nova IPTV Pro - APK para Instalação no Downloader
-            
-            - **Arquivo**: `NovaIPTV-Pro.apk`
-            - **Compatível com**: Android TV, Google TV, Fire TV Stick, TV Box
-            - **Controle Remoto**: 100% mapeado para D-Pad
-            
-            #### Como instalar via Downloader:
-            1. Baixe o arquivo `NovaIPTV-Pro.apk` abaixo
-            2. Ou use o link direto deste arquivo no aplicativo Downloader da sua TV!
-          files: NovaIPTV-Pro.apk
-          generate_release_notes: false
+      - name: Publicar Release com APK para Download no Downloader
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create v1.0.0 NovaIPTV-Pro.apk \
+            --title "Nova IPTV Pro v1.0.0 (Android TV APK)" \
+            --notes "### 📺 Arquivo de Instalação Nova IPTV Pro\n\nBaixe o arquivo **NovaIPTV-Pro.apk** abaixo ou use o link direto no aplicativo **Downloader** da sua Smart TV." \
+            --clobber
 
-      - name: Salvar Artefato de Backup
+      - name: Salvar Artefato como Backup
         uses: actions/upload-artifact@v4
         with:
           name: NovaIPTV-Pro-AndroidTV
