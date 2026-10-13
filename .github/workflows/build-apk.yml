@@ -54,11 +54,11 @@ jobs:
           if-no-files-found: error
 
       - name: Publicar Release com APK para Download
-        continue-on-error: true
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.1
+          name: "Nova IPTV Pro v1.0.1 (Android TV)"
+          body: "### 📺 Nova IPTV Pro - Versão Oficial para Smart TV\n\nBaixe o arquivo APK diretamente para instalar na Smart TV ou TV Box via Downloader."
+          files: NovaIPTV-Pro.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release create v1.0.0 NovaIPTV-Pro.apk \
-            --title "Nova IPTV Pro v1.0.0 (Android TV APK)" \
-            --notes "### 📺 Arquivo de Instalação Nova IPTV Pro\n\nBaixe o arquivo **NovaIPTV-Pro.apk** abaixo." \
-            --clobber || true
