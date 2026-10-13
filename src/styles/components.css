@@ -1,0 +1,455 @@
+/* ==========================================================================
+   COMMON COMPONENTS & TV UI CONTROLS
+   ========================================================================== */
+
+/* Top Navigation Bar */
+.tv-navbar {
+  height: 84px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--tv-safe-padding-x);
+  background: linear-gradient(180deg, rgba(8, 11, 17, 0.95) 0%, rgba(8, 11, 17, 0) 100%);
+  position: relative;
+  z-index: 100;
+  flex-shrink: 0;
+}
+
+.tv-navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.tv-logo-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tv-logo-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--primary-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px var(--primary-glow);
+  color: #fff;
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: -0.5px;
+}
+
+.tv-logo-text {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  background: linear-gradient(90deg, #ffffff 0%, #cbd5e1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.tv-logo-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(0, 210, 255, 0.15);
+  color: var(--primary);
+  border: 1px solid rgba(0, 210, 255, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Account Info Pill in Navbar */
+.tv-account-pill {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  padding: 6px 18px 6px 12px;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  transition: all 0.2s ease;
+}
+
+.tv-account-pill:hover,
+.tv-account-pill.focused {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--primary);
+}
+
+.tv-status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--status-active);
+  box-shadow: 0 0 10px var(--status-active-glow);
+  flex-shrink: 0;
+}
+
+.tv-status-dot.warning {
+  background: var(--status-warning);
+  box-shadow: 0 0 10px var(--status-warning-glow);
+}
+
+.tv-status-dot.danger {
+  background: var(--status-danger);
+  box-shadow: 0 0 10px var(--status-danger-glow);
+}
+
+.tv-account-info-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.tv-account-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-white);
+  line-height: 1.2;
+}
+
+.tv-account-expiry {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.tv-account-expiry.expiring-soon {
+  color: var(--status-warning);
+}
+
+.tv-account-expiry.expired {
+  color: var(--status-danger);
+}
+
+/* Navbar Actions & Live Clock */
+.tv-navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.tv-icon-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: var(--transition-focus);
+}
+
+.tv-icon-btn:hover,
+.tv-icon-btn.focused {
+  color: #fff;
+  background: var(--bg-surface-elevated);
+}
+
+.tv-icon-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.tv-clock-widget {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  border-left: 1px solid var(--border-subtle);
+  padding-left: 16px;
+  margin-left: 8px;
+}
+
+.tv-clock-time {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+}
+
+.tv-clock-date {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: capitalize;
+}
+
+/* Buttons */
+.tv-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-white);
+  cursor: pointer;
+  transition: var(--transition-focus);
+  white-space: nowrap;
+}
+
+.tv-btn:hover,
+.tv-btn.focused {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.tv-btn-primary {
+  background: var(--primary-gradient);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  box-shadow: 0 4px 18px var(--primary-glow);
+}
+
+.tv-btn-primary:hover,
+.tv-btn-primary.focused {
+  background: linear-gradient(135deg, #22dcff 0%, #1a75ff 100%);
+  box-shadow: var(--focus-ring);
+}
+
+.tv-btn-danger {
+  background: rgba(255, 51, 102, 0.15);
+  border: 1px solid rgba(255, 51, 102, 0.4);
+  color: #ff3366;
+}
+
+.tv-btn-danger:hover,
+.tv-btn-danger.focused {
+  background: #ff3366;
+  color: #fff;
+}
+
+.tv-btn-sm {
+  padding: 8px 14px;
+  font-size: 13px;
+  border-radius: var(--radius-sm);
+}
+
+.tv-btn-lg {
+  padding: 16px 32px;
+  font-size: 18px;
+  border-radius: var(--radius-lg);
+}
+
+/* Modals & Dialogs */
+.tv-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-overlay);
+  backdrop-filter: blur(14px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.tv-modal {
+  width: 90%;
+  max-width: 680px;
+  max-height: 85vh;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-xl);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  animation: modalScaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.tv-modal-header {
+  padding: 24px 32px;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tv-modal-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-white);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tv-modal-body {
+  padding: 28px 32px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.tv-modal-footer {
+  padding: 20px 32px;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 14px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* Forms & Inputs */
+.tv-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tv-form-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tv-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.tv-input {
+  width: 100%;
+  padding: 14px 18px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  color: #fff;
+  font-size: 15px;
+  transition: all 0.2s ease;
+}
+
+.tv-input:focus,
+.tv-input.focused {
+  border-color: var(--primary);
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+.tv-input-action-btn {
+  position: absolute;
+  right: 12px;
+  padding: 6px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.tv-input-action-btn:hover {
+  color: #fff;
+}
+
+/* Toast Notifications */
+.tv-toast-container {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 2000;
+  pointer-events: none;
+}
+
+.tv-toast {
+  min-width: 300px;
+  max-width: 460px;
+  padding: 14px 20px;
+  border-radius: var(--radius-md);
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-card);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  animation: toastSlideIn 0.25s ease-out;
+  pointer-events: auto;
+}
+
+.tv-toast.info {
+  border-left: 4px solid var(--primary);
+}
+
+.tv-toast.success {
+  border-left: 4px solid var(--status-active);
+}
+
+.tv-toast.warning {
+  border-left: 4px solid var(--status-warning);
+}
+
+.tv-toast.error {
+  border-left: 4px solid var(--status-danger);
+}
+
+.tv-toast-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.tv-toast-msg {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* Spinner & Loading */
+.tv-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(255, 255, 255, 0.15);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.tv-spinner-sm {
+  width: 18px;
+  height: 18px;
+  border-width: 2px;
+}
+
+.tv-spinner-lg {
+  width: 56px;
+  height: 56px;
+  border-width: 4px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalScaleIn {
+  from { opacity: 0; transform: scale(0.94); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes toastSlideIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}

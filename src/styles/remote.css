@@ -1,0 +1,188 @@
+/* ==========================================================================
+   VIRTUAL SMART TV REMOTE CONTROL (DEBUG & ACCESSIBILITY WIDGET)
+   ========================================================================== */
+
+.tv-remote-toggle-btn {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 9999;
+  background: rgba(15, 21, 35, 0.85);
+  border: 1px solid var(--border-card);
+  padding: 10px 16px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  transition: all 0.2s ease;
+}
+
+.tv-remote-toggle-btn:hover {
+  background: var(--bg-surface-elevated);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.tv-remote-widget {
+  position: fixed;
+  bottom: 80px;
+  left: 24px;
+  width: 260px;
+  background: rgba(15, 21, 35, 0.95);
+  border: 1px solid var(--border-card);
+  border-radius: 28px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  padding: 20px;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  z-index: 9999;
+  backdrop-filter: blur(20px);
+  animation: modalScaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tv-remote-widget.visible {
+  display: flex;
+}
+
+.tv-remote-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 8px;
+}
+
+.tv-remote-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+}
+
+.tv-remote-close {
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 16px;
+}
+
+.tv-remote-close:hover {
+  color: #fff;
+}
+
+/* D-Pad Controller */
+.tv-dpad-container {
+  width: 170px;
+  height: 170px;
+  position: relative;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 50%;
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tv-dpad-btn {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: 12px;
+  transition: all 0.15s ease;
+}
+
+.tv-dpad-btn:hover,
+.tv-dpad-btn:active {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+.tv-dpad-btn.up { top: 6px; }
+.tv-dpad-btn.down { bottom: 6px; }
+.tv-dpad-btn.left { left: 6px; }
+.tv-dpad-btn.right { right: 6px; }
+
+.tv-dpad-center-ok {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--primary-gradient);
+  color: #fff;
+  font-weight: 800;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 14px var(--primary-glow);
+  transition: transform 0.15s ease;
+}
+
+.tv-dpad-center-ok:hover,
+.tv-dpad-center-ok:active {
+  transform: scale(0.95);
+}
+
+/* Remote Navigation Actions Row */
+.tv-remote-actions-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.tv-remote-pill-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-subtle);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tv-remote-pill-btn:hover,
+.tv-remote-pill-btn:active {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Color Buttons Row */
+.tv-remote-colors-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  padding-top: 4px;
+}
+
+.tv-color-dot {
+  width: 22px;
+  height: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.tv-color-red { background: #ff3366; }
+.tv-color-green { background: #00e676; }
+.tv-color-yellow { background: #ffb800; }
+.tv-color-blue { background: #00b0ff; }

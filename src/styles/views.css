@@ -1,0 +1,1029 @@
+/* ==========================================================================
+   VIEWS & LAYOUTS (DASHBOARD, LIVE TV, VOD, SERIES, SETTINGS, PLAYER)
+   ========================================================================== */
+
+/* Main Content Viewport */
+.tv-main-container {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.tv-view {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0 var(--tv-safe-padding-x) var(--tv-safe-padding-y) var(--tv-safe-padding-x);
+  display: none;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.tv-view.active {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==========================================================================
+   1. DASHBOARD VIEW (IBO / SMARTERS PRO STYLE)
+   ========================================================================== */
+.tv-dashboard-hero {
+  margin-top: 10px;
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tv-hero-greeting h1 {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #fff;
+}
+
+.tv-hero-greeting p {
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+/* Dashboard Action Tiles Grid */
+.tv-dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 175px;
+  gap: 24px;
+  width: 100%;
+}
+
+.tv-dash-card {
+  position: relative;
+  border-radius: var(--radius-xl);
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  overflow: hidden;
+  transition: var(--transition-focus);
+  backdrop-filter: blur(16px);
+}
+
+.tv-dash-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 100% 0%, var(--card-glow, rgba(255, 255, 255, 0.15)) 0%, transparent 70%);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.tv-dash-card:hover,
+.tv-dash-card.focused {
+  background: var(--bg-card-hover);
+  border-color: var(--primary);
+  box-shadow: var(--focus-ring);
+  transform: var(--focus-scale);
+}
+
+.tv-dash-card.featured {
+  grid-column: span 2;
+  background: linear-gradient(135deg, rgba(22, 32, 53, 0.9) 0%, rgba(15, 21, 35, 0.95) 100%);
+}
+
+.tv-dash-card-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-lg);
+  background: var(--icon-bg, rgba(255, 255, 255, 0.08));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.tv-dash-card-icon svg {
+  width: 28px;
+  height: 28px;
+  fill: currentColor;
+}
+
+.tv-dash-card-content {
+  position: relative;
+  z-index: 2;
+}
+
+.tv-dash-card-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.3px;
+}
+
+.tv-dash-card-subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tv-badge-count {
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 11px;
+}
+
+/* Card Themes */
+.card-live {
+  --card-glow: rgba(0, 210, 255, 0.35);
+  --icon-bg: linear-gradient(135deg, #00d2ff 0%, #0066ff 100%);
+}
+
+.card-movies {
+  --card-glow: rgba(255, 51, 102, 0.35);
+  --icon-bg: linear-gradient(135deg, #ff3366 0%, #ff6b3d 100%);
+}
+
+.card-series {
+  --card-glow: rgba(168, 85, 247, 0.35);
+  --icon-bg: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
+}
+
+.card-favs {
+  --card-glow: rgba(255, 184, 0, 0.35);
+  --icon-bg: linear-gradient(135deg, #ffb800 0%, #ff8800 100%);
+}
+
+.card-history {
+  --card-glow: rgba(0, 230, 118, 0.35);
+  --icon-bg: linear-gradient(135deg, #00e676 0%, #00b0ff 100%);
+}
+
+.card-epg {
+  --card-glow: rgba(56, 189, 248, 0.35);
+  --icon-bg: linear-gradient(135deg, #38bdf8 0%, #3b82f6 100%);
+}
+
+/* Dashboard Bottom Account Quick Banner */
+.tv-dashboard-account-banner {
+  margin-top: 24px;
+  padding: 18px 28px;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tv-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.tv-banner-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(0, 210, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+}
+
+.tv-banner-details h4 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.tv-banner-details p {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* ==========================================================================
+   2. LIVE TV VIEW (3-COLUMN SPLIT TV EXPERIENCE)
+   ========================================================================== */
+.tv-live-container {
+  display: grid;
+  grid-template-columns: 280px 420px 1fr;
+  gap: 20px;
+  height: calc(100vh - 100px);
+  margin-top: 8px;
+  overflow: hidden;
+}
+
+/* Left Column: Categories */
+.tv-panel {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100%;
+}
+
+.tv-panel-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tv-panel-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tv-panel-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tv-category-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: var(--transition-focus);
+}
+
+.tv-category-item:hover,
+.tv-category-item.focused {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.tv-category-item.active {
+  background: var(--bg-surface-elevated);
+  color: var(--primary);
+  border-color: rgba(0, 210, 255, 0.3);
+  font-weight: 700;
+}
+
+/* Middle Column: Channels List */
+.tv-channel-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: var(--transition-focus);
+}
+
+.tv-channel-item:hover,
+.tv-channel-item.focused {
+  background: var(--bg-surface-elevated);
+  border-color: var(--primary);
+  box-shadow: var(--focus-ring);
+  transform: var(--focus-scale);
+  color: #fff;
+}
+
+.tv-channel-item.active {
+  border-color: var(--primary);
+  background: rgba(0, 210, 255, 0.08);
+}
+
+.tv-channel-num {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-muted);
+  width: 28px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.tv-channel-logo-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.tv-channel-logo {
+  max-width: 85%;
+  max-height: 85%;
+  object-fit: contain;
+}
+
+.tv-channel-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.tv-channel-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.tv-channel-epg-now {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.tv-channel-fav-btn {
+  padding: 6px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.tv-channel-fav-btn.active {
+  color: var(--accent-gold);
+}
+
+/* Right Column: Preview & EPG Info */
+.tv-preview-panel {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.tv-preview-video-container {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tv-preview-video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.tv-preview-fullscreen-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.65);
+  border: 1px solid var(--border-subtle);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+}
+
+.tv-preview-epg-details {
+  padding: 24px;
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.tv-preview-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.tv-preview-prog-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.tv-epg-time-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tv-epg-progress-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.tv-epg-progress-fill {
+  height: 100%;
+  background: var(--primary-gradient);
+  width: 45%;
+}
+
+.tv-epg-time-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.tv-preview-prog-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* ==========================================================================
+   3. MOVIES & SERIES CATALOG VIEWS
+   ========================================================================== */
+.tv-catalog-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 24px;
+  height: calc(100vh - 100px);
+  margin-top: 8px;
+  overflow: hidden;
+}
+
+.tv-catalog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.tv-catalog-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.tv-catalog-search-wrap {
+  width: 320px;
+}
+
+.tv-posters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
+  overflow-y: auto;
+  padding: 4px 6px 30px 4px;
+  height: calc(100vh - 170px);
+}
+
+.tv-poster-card {
+  position: relative;
+  aspect-ratio: 2 / 3;
+  border-radius: var(--radius-md);
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-card);
+  overflow: hidden;
+  cursor: pointer;
+  transition: var(--transition-focus);
+}
+
+.tv-poster-card:hover,
+.tv-poster-card.focused {
+  border-color: var(--primary);
+  box-shadow: var(--focus-ring);
+  transform: var(--focus-scale);
+}
+
+.tv-poster-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.tv-poster-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(8, 11, 17, 0.95) 0%, rgba(8, 11, 17, 0) 60%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 14px;
+}
+
+.tv-poster-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.25;
+}
+
+.tv-poster-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.tv-rating-badge {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--accent-gold);
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   4. CONTENT DETAIL VIEW (MOVIES & SERIES DETAIL POPUP)
+   ========================================================================== */
+.tv-detail-modal {
+  width: 90vw;
+  max-width: 1100px;
+  height: 80vh;
+  position: relative;
+  background: var(--bg-surface);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  border: 1px solid var(--border-card);
+  display: flex;
+}
+
+.tv-detail-backdrop {
+  position: absolute;
+  inset: 0;
+  opacity: 0.22;
+  filter: blur(20px);
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+}
+
+.tv-detail-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  padding: 40px;
+  gap: 36px;
+}
+
+.tv-detail-poster-wrap {
+  width: 280px;
+  height: 420px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+  border: 1px solid var(--border-card);
+  flex-shrink: 0;
+}
+
+.tv-detail-poster-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tv-detail-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.tv-detail-title {
+  font-size: 34px;
+  font-weight: 900;
+  color: #fff;
+}
+
+.tv-detail-badges {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.tv-badge-pill {
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+}
+
+.tv-detail-desc {
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-top: 18px;
+}
+
+.tv-detail-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 28px;
+}
+
+/* Series Seasons & Episodes layout */
+.tv-series-seasons-bar {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.tv-season-tab {
+  padding: 8px 18px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tv-season-tab.active {
+  background: var(--primary);
+  color: #000;
+  font-weight: 700;
+}
+
+.tv-episodes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.tv-episode-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 18px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.tv-episode-item:hover,
+.tv-episode-item.focused {
+  background: var(--bg-surface-elevated);
+  border-color: var(--primary);
+  box-shadow: var(--focus-ring);
+}
+
+/* ==========================================================================
+   5. FULLSCREEN VIDEO PLAYER & TV OSD (ON-SCREEN DISPLAY)
+   ========================================================================== */
+.tv-player-container {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 5000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.tv-player-container.active {
+  display: flex;
+}
+
+.tv-player-video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.tv-player-video.fit-cover {
+  object-fit: cover;
+}
+
+.tv-player-video.fit-fill {
+  object-fit: fill;
+}
+
+/* OSD Overlay Layer */
+.tv-osd-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 40px 60px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.85) 0%, transparent 25%, transparent 65%, rgba(0, 0, 0, 0.92) 100%);
+  opacity: 1;
+  transition: opacity 0.3s ease;
+  pointer-events: auto;
+  z-index: 10;
+}
+
+.tv-osd-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Top OSD Bar: Channel / Title and Clock */
+.tv-osd-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tv-osd-title-block {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.tv-osd-channel-num {
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--primary);
+}
+
+.tv-osd-channel-name {
+  font-size: 26px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.tv-osd-now-playing {
+  font-size: 16px;
+  color: var(--text-secondary);
+}
+
+/* Bottom OSD Bar: Timeline & Controls */
+.tv-osd-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tv-osd-progress-wrap {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.tv-osd-time-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+  min-width: 60px;
+}
+
+.tv-osd-seek-bar {
+  flex: 1;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  position: relative;
+  cursor: pointer;
+}
+
+.tv-osd-seek-fill {
+  height: 100%;
+  background: var(--primary-gradient);
+  border-radius: 999px;
+  width: 0%;
+  position: relative;
+}
+
+.tv-osd-seek-fill::after {
+  content: '';
+  position: absolute;
+  right: -6px;
+  top: -4px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.tv-osd-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tv-osd-buttons-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.tv-osd-btn {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-subtle);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition-focus);
+}
+
+.tv-osd-btn:hover,
+.tv-osd-btn.focused {
+  background: var(--primary);
+  color: #000;
+  box-shadow: var(--focus-ring);
+  transform: var(--focus-scale);
+}
+
+.tv-osd-btn svg {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+}
+
+/* Quick Channels Drawer inside Player (Zapping Drawer) */
+.tv-player-channels-drawer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 380px;
+  background: rgba(8, 11, 17, 0.96);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid var(--border-card);
+  z-index: 20;
+  transform: translateX(-100%);
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.tv-player-channels-drawer.open {
+  transform: translateX(0);
+}
+
+/* Player Buffering & Error Screen */
+.tv-player-status-overlay {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.tv-player-status-text {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+}
+
+/* ==========================================================================
+   6. SETTINGS VIEW
+   ========================================================================== */
+.tv-settings-container {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 32px;
+  margin-top: 12px;
+  height: calc(100vh - 120px);
+}
+
+.tv-settings-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tv-settings-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  border-radius: var(--radius-lg);
+  color: var(--text-secondary);
+  font-size: 16px;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: var(--transition-focus);
+}
+
+.tv-settings-nav-item:hover,
+.tv-settings-nav-item.focused {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.tv-settings-nav-item.active {
+  background: var(--bg-surface-elevated);
+  border-color: var(--primary);
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.tv-settings-nav-item svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.tv-settings-content {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-xl);
+  padding: 36px;
+  overflow-y: auto;
+}
+
+.tv-settings-section-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tv-settings-group {
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tv-settings-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+}
+
+.tv-settings-item-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.tv-settings-item-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}

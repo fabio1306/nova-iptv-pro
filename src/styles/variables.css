@@ -1,0 +1,125 @@
+/* ==========================================================================
+   NOVA IPTV PRO - DESIGN SYSTEM & THEME TOKENS (SMART TV 10-FOOT UI)
+   ========================================================================== */
+
+:root {
+  /* Typography */
+  --font-main: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Theme Defaults (Dark Sapphire Theme) */
+  --bg-base: #080b11;
+  --bg-surface: #0f1523;
+  --bg-surface-elevated: #162035;
+  --bg-card: rgba(22, 32, 53, 0.7);
+  --bg-card-hover: rgba(30, 44, 73, 0.9);
+  --bg-glass: rgba(15, 21, 35, 0.82);
+  --bg-glass-heavy: rgba(8, 11, 17, 0.94);
+  --bg-overlay: rgba(3, 5, 8, 0.85);
+
+  /* Primary Accent & Glow */
+  --primary: #00d2ff;
+  --primary-glow: rgba(0, 210, 255, 0.45);
+  --primary-gradient: linear-gradient(135deg, #00d2ff 0%, #0066ff 100%);
+  --primary-hover: #33dcff;
+  --primary-text: #ffffff;
+
+  /* Secondary & Accents */
+  --secondary: #7928ca;
+  --secondary-glow: rgba(121, 40, 202, 0.4);
+  --accent-gold: #ffb800;
+  --accent-gold-glow: rgba(255, 184, 0, 0.35);
+
+  /* Status Colors */
+  --status-active: #00e676;
+  --status-active-glow: rgba(0, 230, 118, 0.4);
+  --status-warning: #ffab00;
+  --status-warning-glow: rgba(255, 171, 0, 0.4);
+  --status-danger: #ff3366;
+  --status-danger-glow: rgba(255, 51, 102, 0.4);
+  --status-info: #00b0ff;
+
+  /* Neutral Text & Borders */
+  --text-white: #ffffff;
+  --text-primary: #f0f4fc;
+  --text-secondary: #9aa9c2;
+  --text-muted: #5e6f8a;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-card: rgba(255, 255, 255, 0.12);
+  --border-focus: #00d2ff;
+
+  /* TV Navigation Focus Ring */
+  --focus-ring: 0 0 0 3.5px #00d2ff, 0 8px 30px rgba(0, 210, 255, 0.6);
+  --focus-scale: scale(1.04);
+  --transition-focus: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.18s ease;
+
+  /* TV Safe Areas & Layout */
+  --tv-safe-padding-x: 48px;
+  --tv-safe-padding-y: 36px;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+
+  /* UI Scale multiplier (for settings) */
+  --ui-scale: 1;
+}
+
+/* Emerald Theme */
+body[data-theme="emerald"] {
+  --bg-base: #06110d;
+  --bg-surface: #0c1e18;
+  --bg-surface-elevated: #132d24;
+  --bg-card: rgba(19, 45, 36, 0.7);
+  --bg-card-hover: rgba(27, 63, 50, 0.9);
+  --primary: #00e676;
+  --primary-glow: rgba(0, 230, 118, 0.45);
+  --primary-gradient: linear-gradient(135deg, #00e676 0%, #00b0ff 100%);
+  --border-focus: #00e676;
+  --focus-ring: 0 0 0 3.5px #00e676, 0 8px 30px rgba(0, 230, 118, 0.6);
+}
+
+/* Crimson Velvet Theme */
+body[data-theme="crimson"] {
+  --bg-base: #11080a;
+  --bg-surface: #1e0d12;
+  --bg-surface-elevated: #2f141c;
+  --bg-card: rgba(47, 20, 28, 0.7);
+  --bg-card-hover: rgba(65, 27, 39, 0.9);
+  --primary: #ff2a5f;
+  --primary-glow: rgba(255, 42, 95, 0.45);
+  --primary-gradient: linear-gradient(135deg, #ff2a5f 0%, #ff7b00 100%);
+  --border-focus: #ff2a5f;
+  --focus-ring: 0 0 0 3.5px #ff2a5f, 0 8px 30px rgba(255, 42, 95, 0.6);
+}
+
+/* Cyberpunk Purple Theme */
+body[data-theme="purple"] {
+  --bg-base: #0c0814;
+  --bg-surface: #160f26;
+  --bg-surface-elevated: #24183d;
+  --bg-card: rgba(36, 24, 61, 0.7);
+  --bg-card-hover: rgba(52, 34, 88, 0.9);
+  --primary: #a855f7;
+  --primary-glow: rgba(168, 85, 247, 0.45);
+  --primary-gradient: linear-gradient(135deg, #c084fc 0%, #6366f1 100%);
+  --border-focus: #c084fc;
+  --focus-ring: 0 0 0 3.5px #c084fc, 0 8px 30px rgba(192, 132, 252, 0.6);
+}
+
+/* AMOLED Deep Black */
+body[data-theme="amoled"] {
+  --bg-base: #000000;
+  --bg-surface: #0a0a0a;
+  --bg-surface-elevated: #141414;
+  --bg-card: rgba(20, 20, 20, 0.85);
+  --bg-card-hover: rgba(35, 35, 35, 0.95);
+  --primary: #00d2ff;
+  --primary-glow: rgba(0, 210, 255, 0.5);
+  --primary-gradient: linear-gradient(135deg, #00d2ff 0%, #0055ff 100%);
+  --border-subtle: rgba(255, 255, 255, 0.1);
+  --border-card: rgba(255, 255, 255, 0.16);
+  --border-focus: #00d2ff;
+  --focus-ring: 0 0 0 3.5px #00d2ff, 0 8px 30px rgba(0, 210, 255, 0.7);
+}

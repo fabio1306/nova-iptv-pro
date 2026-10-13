@@ -1,0 +1,13 @@
+{
+  "appId": "com.novaiptv.player",
+  "appName": "Nova IPTV Pro",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https",
+    "cleartext": true
+  },
+  "android": {
+    "allowMixedContent": true,
+    "webContentsDebuggingEnabled": true
+  }
+}
